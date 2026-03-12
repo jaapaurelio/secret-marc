@@ -139,7 +139,7 @@ function App() {
           className="unlock-button"
           onClick={() => navigateTo('/contdown')}
         >
-          Unlock surprise
+          Unlock
         </button>
       )}
 
