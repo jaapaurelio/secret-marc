@@ -1,9 +1,11 @@
 :root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Trebuchet MS', sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #f5d94f;
+  background: #020617;
 }
 
 *,
@@ -15,8 +17,94 @@
 body {
   margin: 0;
   min-height: 100vh;
+  background:
+    radial-gradient(circle at top, #0f172a, #020617 60%),
+    #020617;
 }
 
 #root {
   min-height: 100vh;
+}
+
+button {
+  font: inherit;
+}
+
+.game {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+}
+
+.panel {
+  text-align: center;
+}
+
+.panel h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1;
+}
+
+.panel p {
+  margin: 0 0 1rem;
+  color: #cbd5e1;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  color: #f8fafc;
+}
+
+.panel button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.75rem 1.1rem;
+  background: #facc15;
+  color: #111827;
+  cursor: pointer;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 0.25rem;
+  width: min(92vw, 28rem);
+  padding: 0.75rem;
+  background: rgba(15, 23, 42, 0.9);
+  border: 3px solid #1d4ed8;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.35);
+}
+
+.tile {
+  aspect-ratio: 1;
+  border-radius: 0.35rem;
+}
+
+.wall {
+  background: #2563eb;
+}
+
+.path {
+  background: #0f172a;
+}
+
+.pellet {
+  background:
+    radial-gradient(circle, #fde68a 0 18%, transparent 19%),
+    #0f172a;
+}
+
+.player {
+  background:
+    radial-gradient(circle at 65% 35%, #111827 0 7%, transparent 8%),
+    #facc15;
+  border-radius: 50%;
 }
