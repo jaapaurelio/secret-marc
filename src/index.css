@@ -52,6 +52,58 @@ button {
   min-height: 100vh;
 }
 
+.countdown-page {
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+.countdown-shell {
+  width: min(92vw, 42rem);
+  padding: 2.5rem 1.5rem;
+  border: 3px solid #1d4ed8;
+  border-radius: 1.5rem;
+  background: rgba(15, 23, 42, 0.88);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+
+.countdown-message {
+  margin: 0 0 0.75rem;
+  color: #f8fafc;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.countdown-riddle {
+  max-width: 28rem;
+  margin: 0 auto 1.5rem;
+  color: #cbd5e1;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.countdown-readout {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  color: #f8fafc;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  font-weight: 700;
+}
+
+.countdown-readout span {
+  min-width: 6ch;
+}
+
+.countdown-finished {
+  margin: 1rem 0 0;
+  color: #fda4af;
+}
+
 .panel {
   text-align: center;
   width: 100%;
