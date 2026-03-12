@@ -145,7 +145,7 @@ function App() {
 
       <div className="game-shell">
         <div className="panel">
-          <h1>Pac-Man</h1>
+          <h1>Marc-Man</h1>
           <p>Use arrow keys or WASD.</p>
           <div className="stats">
             <span>Score: {score}</span>

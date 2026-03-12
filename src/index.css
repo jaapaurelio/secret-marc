@@ -37,7 +37,7 @@ button {
   align-items: center;
   justify-content: flex-start;
   gap: 1.5rem;
-  padding: 2rem 1rem 4rem;
+  padding: 2rem 1rem 8rem;
 }
 
 .game-shell {
@@ -87,10 +87,13 @@ button {
 }
 
 .unlock-button {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   border: 0;
   border-radius: 999px;
   padding: 1rem 2rem;
-  margin-top: 0.5rem;
   background: #fb7185;
   color: #fff7ed;
   font-size: clamp(1.1rem, 2.8vw, 1.6rem);
@@ -99,6 +102,7 @@ button {
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: 0 1rem 2rem rgba(251, 113, 133, 0.3);
+  z-index: 11;
 }
 
 .board {
