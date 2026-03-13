@@ -119,6 +119,19 @@ button {
   color: #fda4af;
 }
 
+.countdown-action {
+  margin-top: 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.8rem 1.3rem;
+  background: #facc15;
+  color: #111827;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.25);
+}
+
 .panel {
   text-align: center;
   width: 100%;

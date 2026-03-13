@@ -23,6 +23,11 @@ function formatUnit(value) {
 function Countdown() {
   const [timeLeft, setTimeLeft] = useState(getTimeLeft)
 
+  const playAgain = () => {
+    window.history.pushState({}, '', '/')
+    window.dispatchEvent(new PopStateEvent('popstate'))
+  }
+
   useEffect(() => {
     const timer = window.setInterval(() => {
       setTimeLeft(getTimeLeft())
@@ -42,6 +47,8 @@ function Countdown() {
         seconds: formatUnit(timeLeft.seconds),
       }}
       isComplete={timeLeft.isComplete}
+      actionLabel="Play again"
+      onAction={playAgain}
     />
   )
 }

@@ -4,6 +4,8 @@ function DestinationCard({
   body,
   countdown,
   isComplete = false,
+  actionLabel,
+  onAction,
 }) {
   return (
     <main className="page countdown-page" aria-label="Destination page">
@@ -19,6 +21,11 @@ function DestinationCard({
           </div>
         ) : null}
         {isComplete ? <p className="countdown-finished">Time.</p> : null}
+        {actionLabel && onAction ? (
+          <button type="button" className="countdown-action" onClick={onAction}>
+            {actionLabel}
+          </button>
+        ) : null}
       </section>
     </main>
   )
