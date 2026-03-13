@@ -46,7 +46,6 @@ function Countdown() {
         minutes: formatUnit(timeLeft.minutes),
         seconds: formatUnit(timeLeft.seconds),
       }}
-      isComplete={timeLeft.isComplete}
       actionLabel="Play again"
       onAction={playAgain}
     />

@@ -3,7 +3,6 @@ function DestinationCard({
   message,
   body,
   countdown,
-  isComplete = false,
   actionLabel,
   onAction,
 }) {
@@ -20,7 +19,6 @@ function DestinationCard({
             <span>{countdown.seconds} sec</span>
           </div>
         ) : null}
-        {isComplete ? <p className="countdown-finished">Time.</p> : null}
         {actionLabel && onAction ? (
           <button type="button" className="countdown-action" onClick={onAction}>
             {actionLabel}
@@ -28,7 +26,7 @@ function DestinationCard({
         ) : null}
       </section>
     </main>
-  )
+  );
 }
 
-export default DestinationCard
+export default DestinationCard;
