@@ -34,8 +34,8 @@ function Countdown() {
       <section className="countdown-shell">
         <p className="countdown-message">Be at this location.</p>
         <p className="countdown-riddle">
-          Where the Green Monster watches over old red seats, and the Citgo sign
-          glows above the crowd.
+          Where Mass Ave hums, the Red Line runs below, and Cambridge gathers in
+          the middle.
         </p>
         <div className="countdown-readout" aria-live="polite">
           <span>{formatUnit(timeLeft.hours)} hours</span>
