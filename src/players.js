@@ -35,7 +35,7 @@ export const PLAYERS = {
   ramen: {
     image: ramenImage,
     name: 'Ramen-Man',
-    released: false,
+    released: true,
     unlockRoute: '/ramen',
   },
   pacman: {
