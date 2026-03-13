@@ -41,7 +41,7 @@ export const PLAYERS = {
   pacman: {
     image: pacmanImage,
     name: 'Pac-Man',
-    released: false,
+    released: true,
     unlockRoute: '/arcade',
   },
 }
