@@ -15,7 +15,7 @@ export const PLAYERS = {
   nico: {
     image: nicoImage,
     name: 'Nico-Man',
-    released: false,
+    released: true,
     unlockRoute: '/beer',
   },
   marcQueen: {
