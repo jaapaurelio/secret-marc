@@ -21,13 +21,13 @@ export const PLAYERS = {
   marcQueen: {
     image: marcQueenImage,
     name: 'Marc-Queen',
-    released: false,
+    released: true,
     unlockRoute: '/queen?name=marcQueen',
   },
   nicoQueen: {
     image: nicoQueenImage,
     name: 'Nico-Queen',
-    released: false,
+    released: true,
     unlockRoute: '/queen?name=nicoQueen',
   },
 }
