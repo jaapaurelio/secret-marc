@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
+import Beer from './Beer.jsx'
 import Countdown from './Countdown.jsx'
 import marcImage from './assets/marc.png'
+import nicoImage from './assets/nico.png'
 
 const MAZE = [
   '#########',
@@ -20,6 +22,18 @@ const DIRECTIONS = [
   { x: -1, y: 0 },
   { x: 1, y: 0 },
 ]
+const PLAYERS = {
+  marc: {
+    image: marcImage,
+    name: 'Marc-Man',
+    nextLabel: 'Change to Nico-Man',
+  },
+  nico: {
+    image: nicoImage,
+    name: 'Nico-Man',
+    nextLabel: 'Change to Marc-Man',
+  },
+}
 
 function createPellets() {
   const pellets = MAZE.map((row) =>
@@ -72,9 +86,9 @@ function App() {
   const [pellets, setPellets] = useState(createPellets)
   const [score, setScore] = useState(0)
   const [isCaught, setIsCaught] = useState(false)
-  const [showRestart, setShowRestart] = useState(false)
   const [playerStep, setPlayerStep] = useState(0)
   const [playerTilt, setPlayerTilt] = useState('0deg')
+  const [playerChoice, setPlayerChoice] = useState('marc')
 
   const resetGame = () => {
     setPlayer(START)
@@ -82,7 +96,6 @@ function App() {
     setPellets(createPellets())
     setScore(0)
     setIsCaught(false)
-    setShowRestart(false)
     setPlayerStep(0)
     setPlayerTilt('0deg')
   }
@@ -103,7 +116,6 @@ function App() {
       setPlayer(resolvedPlayer)
       setEnemy(resolvedPlayer)
       setIsCaught(true)
-      setShowRestart(false)
       return
     }
 
@@ -125,18 +137,6 @@ function App() {
     setPlayerStep((currentStep) => currentStep + 1)
     setScore((currentScore) => currentScore + 1)
   }
-
-  useEffect(() => {
-    if (!isCaught) {
-      return undefined
-    }
-
-    const timer = window.setTimeout(() => {
-      setShowRestart(true)
-    }, 1200)
-
-    return () => window.clearTimeout(timer)
-  }, [isCaught])
 
   useEffect(() => {
     const onPopState = () => {
@@ -172,14 +172,25 @@ function App() {
   }, [handleMove])
 
   const pelletsLeft = pellets.flat().filter(Boolean).length
+  const activePlayer = PLAYERS[playerChoice]
 
   const navigateTo = (nextRoute) => {
     window.history.pushState({}, '', nextRoute)
     setRoute(nextRoute)
   }
 
+  const unlockRoute = playerChoice === 'nico' ? '/beer' : '/contdown'
+
+  const togglePlayerChoice = () => {
+    setPlayerChoice((currentChoice) => (currentChoice === 'marc' ? 'nico' : 'marc'))
+  }
+
   if (route === '/contdown') {
     return <Countdown />
+  }
+
+  if (route === '/beer') {
+    return <Beer />
   }
 
   return (
@@ -188,7 +199,7 @@ function App() {
         <button
           type="button"
           className="unlock-button"
-          onClick={() => navigateTo('/contdown')}
+          onClick={() => navigateTo(unlockRoute)}
         >
           Unlock
         </button>
@@ -196,7 +207,7 @@ function App() {
 
       <div className="game-shell">
         <div className="panel">
-          <h1>Marc-Man</h1>
+          <h1>{activePlayer.name}</h1>
           <p>Use arrow keys or WASD.</p>
           <div className="stats">
             <span>Score: {score}</span>
@@ -208,20 +219,27 @@ function App() {
                   : `Dots left: ${pelletsLeft}`}
             </span>
           </div>
-          {!isCaught ? (
+          <div className="panel-actions">
             <button type="button" onClick={resetGame}>
               Reset
             </button>
-          ) : showRestart ? (
-            <button type="button" onClick={resetGame}>
-              Restart
+            {/* Player switching is hidden until the Nico flow is ready to ship.
+            <button type="button" onClick={togglePlayerChoice}>
+              {activePlayer.nextLabel}
             </button>
-          ) : (
-            <p className="caught-message">Caught by red.</p>
-          )}
+            */}
+          </div>
         </div>
 
         <section className="board" aria-label="Pac-Man board">
+          {isCaught ? (
+            <div className="caught-overlay">
+              <p className="caught-message">Caught by red.</p>
+              <button type="button" className="caught-reset" onClick={resetGame}>
+                Reset
+              </button>
+            </div>
+          ) : null}
           {MAZE.map((row, y) =>
             row.split('').map((cell, x) => {
               const isPlayer = player.x === x && player.y === y
@@ -244,7 +262,7 @@ function App() {
               const style =
                 isPlayer || isCaughtTile
                   ? {
-                      '--player-image': `url(${marcImage})`,
+                      '--player-image': `url(${activePlayer.image})`,
                       '--tilt-angle': isCaughtTile ? '0deg' : playerTilt,
                     }
                   : undefined
