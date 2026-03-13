@@ -223,7 +223,7 @@ function App() {
             <button type="button" onClick={resetGame}>
               Reset
             </button>
-            {/* Player switching is hidden until the Nico flow is ready to ship.
+            {/* Re-enable player switching when the Nico flow is meant to be user-visible.
             <button type="button" onClick={togglePlayerChoice}>
               {activePlayer.nextLabel}
             </button>
