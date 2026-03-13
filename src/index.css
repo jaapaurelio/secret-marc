@@ -216,7 +216,7 @@ button {
   background-image: var(--player-image);
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 138%;
+  background-size: contain;
   border-radius: 50%;
   overflow: hidden;
   transform-origin: center 58%;
@@ -242,7 +242,7 @@ button {
   background:
     radial-gradient(circle at 35% 35%, rgba(248, 250, 252, 0.95) 0 8%, transparent 9%),
     linear-gradient(rgba(239, 68, 68, 0.62), rgba(239, 68, 68, 0.62)),
-    var(--player-image) center / 138% no-repeat,
+    var(--player-image) center / contain no-repeat,
     #0f172a;
   box-shadow: 0 0 0 0.25rem rgba(250, 204, 21, 0.45);
   animation: caught-pulse 1.2s ease-in-out forwards;
