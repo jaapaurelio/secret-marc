@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import Beer from './Beer.jsx'
 import Countdown from './Countdown.jsx'
-import marcImage from './assets/marc.png'
-import nicoImage from './assets/nico.png'
+import Queen from './Queen.jsx'
+import { getAvailablePlayerChoices, PLAYERS } from './players.js'
 
 const MAZE = [
   '#########',
@@ -22,18 +22,7 @@ const DIRECTIONS = [
   { x: -1, y: 0 },
   { x: 1, y: 0 },
 ]
-const PLAYERS = {
-  marc: {
-    image: marcImage,
-    name: 'Marc-Man',
-    nextLabel: 'Change to Nico-Man',
-  },
-  nico: {
-    image: nicoImage,
-    name: 'Nico-Man',
-    nextLabel: 'Change to Marc-Man',
-  },
-}
+const AVAILABLE_PLAYER_CHOICES = getAvailablePlayerChoices()
 
 function createPellets() {
   const pellets = MAZE.map((row) =>
@@ -88,7 +77,7 @@ function App() {
   const [isCaught, setIsCaught] = useState(false)
   const [playerStep, setPlayerStep] = useState(0)
   const [playerTilt, setPlayerTilt] = useState('0deg')
-  const [playerChoice, setPlayerChoice] = useState('marc')
+  const [playerChoice, setPlayerChoice] = useState(AVAILABLE_PLAYER_CHOICES[0] ?? 'marc')
 
   const resetGame = () => {
     setPlayer(START)
@@ -171,18 +160,38 @@ function App() {
     }
   }, [handleMove])
 
+  useEffect(() => {
+    if (!AVAILABLE_PLAYER_CHOICES.includes(playerChoice) && AVAILABLE_PLAYER_CHOICES.length > 0) {
+      setPlayerChoice(AVAILABLE_PLAYER_CHOICES[0])
+    }
+  }, [playerChoice])
+
   const pelletsLeft = pellets.flat().filter(Boolean).length
   const activePlayer = PLAYERS[playerChoice]
+  const canRotatePlayers = AVAILABLE_PLAYER_CHOICES.length > 1
+  const nextPlayerChoice = canRotatePlayers
+    ? AVAILABLE_PLAYER_CHOICES[
+        (AVAILABLE_PLAYER_CHOICES.indexOf(playerChoice) + 1) % AVAILABLE_PLAYER_CHOICES.length
+      ]
+    : null
+  const nextPlayer = nextPlayerChoice ? PLAYERS[nextPlayerChoice] : null
 
   const navigateTo = (nextRoute) => {
     window.history.pushState({}, '', nextRoute)
-    setRoute(nextRoute)
+    setRoute(window.location.pathname)
   }
 
-  const unlockRoute = playerChoice === 'nico' ? '/beer' : '/contdown'
+  const unlockRoute = activePlayer.unlockRoute
 
   const togglePlayerChoice = () => {
-    setPlayerChoice((currentChoice) => (currentChoice === 'marc' ? 'nico' : 'marc'))
+    if (!canRotatePlayers) {
+      return
+    }
+
+    setPlayerChoice((currentChoice) => {
+      const currentIndex = AVAILABLE_PLAYER_CHOICES.indexOf(currentChoice)
+      return AVAILABLE_PLAYER_CHOICES[(currentIndex + 1) % AVAILABLE_PLAYER_CHOICES.length]
+    })
   }
 
   if (route === '/contdown') {
@@ -191,6 +200,10 @@ function App() {
 
   if (route === '/beer') {
     return <Beer />
+  }
+
+  if (route === '/queen') {
+    return <Queen />
   }
 
   return (
@@ -223,11 +236,11 @@ function App() {
             <button type="button" onClick={resetGame}>
               Reset
             </button>
-            {/* Re-enable player switching when the Nico flow is meant to be user-visible.
-            <button type="button" onClick={togglePlayerChoice}>
-              {activePlayer.nextLabel}
-            </button>
-            */}
+            {canRotatePlayers ? (
+              <button type="button" onClick={togglePlayerChoice}>
+                {`Change to ${nextPlayer.name}`}
+              </button>
+            ) : null}
           </div>
         </div>
 
