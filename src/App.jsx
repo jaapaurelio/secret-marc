@@ -233,14 +233,14 @@ function App() {
             </span>
           </div>
           <div className="panel-actions">
-            <button type="button" onClick={resetGame}>
-              Reset
-            </button>
             {canRotatePlayers ? (
               <button type="button" onClick={togglePlayerChoice}>
                 {`Change to ${nextPlayer.name}`}
               </button>
             ) : null}
+            <button type="button" onClick={resetGame}>
+              Reset
+            </button>
           </div>
         </div>
 
