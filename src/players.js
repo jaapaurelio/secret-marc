@@ -2,8 +2,10 @@ import marcImage from './assets/marc.png'
 import marcQueenImage from './assets/marc-queen.png'
 import nicoImage from './assets/nico.png'
 import nicoQueenImage from './assets/nico-queen.png'
+import pacmanImage from './assets/pacman.png'
+import ramenImage from './assets/ramen.png'
 
-export const PLAYER_ORDER = ['marc', 'nico', 'marcQueen', 'nicoQueen']
+export const PLAYER_ORDER = ['marc', 'nico', 'marcQueen', 'nicoQueen', 'ramen', 'pacman']
 
 export const PLAYERS = {
   marc: {
@@ -29,6 +31,18 @@ export const PLAYERS = {
     name: 'Nico-Queen',
     released: false,
     unlockRoute: '/queen?name=nicoQueen',
+  },
+  ramen: {
+    image: ramenImage,
+    name: 'Ramen-Man',
+    released: false,
+    unlockRoute: '/ramen',
+  },
+  pacman: {
+    image: pacmanImage,
+    name: 'Pac-Man',
+    released: false,
+    unlockRoute: '/arcade',
   },
 }
 

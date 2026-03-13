@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import Arcade from './Arcade.jsx'
 import Beer from './Beer.jsx'
 import Countdown from './Countdown.jsx'
 import Queen from './Queen.jsx'
+import Ramen from './Ramen.jsx'
 import { getAvailablePlayerChoices, PLAYERS } from './players.js'
 
 const MAZE = [
@@ -200,6 +202,14 @@ function App() {
 
   if (route === '/beer') {
     return <Beer />
+  }
+
+  if (route === '/arcade') {
+    return <Arcade />
+  }
+
+  if (route === '/ramen') {
+    return <Ramen />
   }
 
   if (route === '/queen') {
