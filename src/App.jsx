@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Countdown from './Countdown.jsx'
+import marcImage from './assets/marc.png'
 
 const MAZE = [
   '#########',
@@ -33,6 +34,22 @@ function isWall(position) {
   return MAZE[position.y]?.[position.x] === '#'
 }
 
+function isSamePosition(first, second) {
+  return first.x === second.x && first.y === second.y
+}
+
+function getTiltAngle(move) {
+  if (move.x === -1) {
+    return '-9deg'
+  }
+
+  if (move.x === 1) {
+    return '9deg'
+  }
+
+  return '0deg'
+}
+
 function getRandomEnemyMove(enemy) {
   const validMoves = DIRECTIONS
     .map((direction) => ({
@@ -54,31 +71,72 @@ function App() {
   const [enemy, setEnemy] = useState(ENEMY_START)
   const [pellets, setPellets] = useState(createPellets)
   const [score, setScore] = useState(0)
+  const [isCaught, setIsCaught] = useState(false)
+  const [showRestart, setShowRestart] = useState(false)
+  const [playerStep, setPlayerStep] = useState(0)
+  const [playerTilt, setPlayerTilt] = useState('0deg')
+
+  const resetGame = () => {
+    setPlayer(START)
+    setEnemy(ENEMY_START)
+    setPellets(createPellets())
+    setScore(0)
+    setIsCaught(false)
+    setShowRestart(false)
+    setPlayerStep(0)
+    setPlayerTilt('0deg')
+  }
 
   const handleMove = (move) => {
-    setEnemy((currentEnemy) => getRandomEnemyMove(currentEnemy))
+    if (isCaught) {
+      return
+    }
 
-    setPlayer((current) => {
-      const next = { x: current.x + move.x, y: current.y + move.y }
+    const nextPlayer = { x: player.x + move.x, y: player.y + move.y }
+    const resolvedPlayer = isWall(nextPlayer) ? player : nextPlayer
+    const nextEnemy = getRandomEnemyMove(enemy)
+    const collided =
+      isSamePosition(resolvedPlayer, nextEnemy) ||
+      (isSamePosition(resolvedPlayer, enemy) && isSamePosition(nextEnemy, player))
 
-      if (isWall(next)) {
-        return current
+    if (collided) {
+      setPlayer(resolvedPlayer)
+      setEnemy(resolvedPlayer)
+      setIsCaught(true)
+      setShowRestart(false)
+      return
+    }
+
+    setEnemy(nextEnemy)
+    setPlayer(resolvedPlayer)
+
+    if (isSamePosition(resolvedPlayer, player) || !pellets[resolvedPlayer.y][resolvedPlayer.x]) {
+      if (!isSamePosition(resolvedPlayer, player)) {
+        setPlayerTilt(getTiltAngle(move))
+        setPlayerStep((currentStep) => currentStep + 1)
       }
+      return
+    }
 
-      setPellets((currentPellets) => {
-        if (!currentPellets[next.y][next.x]) {
-          return currentPellets
-        }
-
-        const updated = currentPellets.map((row) => [...row])
-        updated[next.y][next.x] = false
-        setScore((currentScore) => currentScore + 1)
-        return updated
-      })
-
-      return next
-    })
+    const updatedPellets = pellets.map((row) => [...row])
+    updatedPellets[resolvedPlayer.y][resolvedPlayer.x] = false
+    setPellets(updatedPellets)
+    setPlayerTilt(getTiltAngle(move))
+    setPlayerStep((currentStep) => currentStep + 1)
+    setScore((currentScore) => currentScore + 1)
   }
+
+  useEffect(() => {
+    if (!isCaught) {
+      return undefined
+    }
+
+    const timer = window.setTimeout(() => {
+      setShowRestart(true)
+    }, 1200)
+
+    return () => window.clearTimeout(timer)
+  }, [isCaught])
 
   useEffect(() => {
     const onPopState = () => {
@@ -111,20 +169,13 @@ function App() {
       window.removeEventListener('popstate', onPopState)
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [])
+  }, [handleMove])
 
   const pelletsLeft = pellets.flat().filter(Boolean).length
 
   const navigateTo = (nextRoute) => {
     window.history.pushState({}, '', nextRoute)
     setRoute(nextRoute)
-  }
-
-  const resetGame = () => {
-    setPlayer(START)
-    setEnemy(ENEMY_START)
-    setPellets(createPellets())
-    setScore(0)
   }
 
   if (route === '/contdown') {
@@ -149,11 +200,25 @@ function App() {
           <p>Use arrow keys or WASD.</p>
           <div className="stats">
             <span>Score: {score}</span>
-            <span>{pelletsLeft === 0 ? 'You win' : `Dots left: ${pelletsLeft}`}</span>
+            <span>
+              {isCaught
+                ? 'Caught'
+                : pelletsLeft === 0
+                  ? 'You win'
+                  : `Dots left: ${pelletsLeft}`}
+            </span>
           </div>
-          <button type="button" onClick={resetGame}>
-            Reset
-          </button>
+          {!isCaught ? (
+            <button type="button" onClick={resetGame}>
+              Reset
+            </button>
+          ) : showRestart ? (
+            <button type="button" onClick={resetGame}>
+              Restart
+            </button>
+          ) : (
+            <p className="caught-message">Caught by red.</p>
+          )}
         </div>
 
         <section className="board" aria-label="Pac-Man board">
@@ -161,35 +226,66 @@ function App() {
             row.split('').map((cell, x) => {
               const isPlayer = player.x === x && player.y === y
               const isEnemy = enemy.x === x && enemy.y === y
+              const isCaughtTile = isCaught && isPlayer && isEnemy
               const hasPellet = pellets[y][x]
               const className =
                 cell === '#'
                   ? 'tile wall'
+                  : isCaughtTile
+                    ? 'tile caught'
                   : isEnemy
                     ? 'tile enemy'
                     : isPlayer
-                      ? 'tile player'
+                      ? `tile player player-moving-${playerStep % 2}`
                       : hasPellet
                         ? 'tile pellet'
                         : 'tile path'
 
-              return <div key={`${x}-${y}`} className={className} />
+              const style =
+                isPlayer || isCaughtTile
+                  ? {
+                      '--player-image': `url(${marcImage})`,
+                      '--tilt-angle': isCaughtTile ? '0deg' : playerTilt,
+                    }
+                  : undefined
+
+              return <div key={`${x}-${y}`} className={className} style={style} />
             }),
           )}
         </section>
       </div>
 
       <div className="mobile-controls" aria-label="On-screen controls">
-        <button type="button" className="control-up" onClick={() => handleMove({ x: 0, y: -1 })}>
+        <button
+          type="button"
+          className="control-up"
+          disabled={isCaught}
+          onClick={() => handleMove({ x: 0, y: -1 })}
+        >
           ↑
         </button>
-        <button type="button" className="control-left" onClick={() => handleMove({ x: -1, y: 0 })}>
+        <button
+          type="button"
+          className="control-left"
+          disabled={isCaught}
+          onClick={() => handleMove({ x: -1, y: 0 })}
+        >
           ←
         </button>
-        <button type="button" className="control-right" onClick={() => handleMove({ x: 1, y: 0 })}>
+        <button
+          type="button"
+          className="control-right"
+          disabled={isCaught}
+          onClick={() => handleMove({ x: 1, y: 0 })}
+        >
           →
         </button>
-        <button type="button" className="control-down" onClick={() => handleMove({ x: 0, y: 1 })}>
+        <button
+          type="button"
+          className="control-down"
+          disabled={isCaught}
+          onClick={() => handleMove({ x: 0, y: 1 })}
+        >
           ↓
         </button>
       </div>

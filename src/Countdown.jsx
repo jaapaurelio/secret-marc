@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import marcImage from './assets/marc.png'
 
 const TARGET_DATE = new Date('2026-03-13T19:00:00-04:00')
 
@@ -32,6 +33,7 @@ function Countdown() {
   return (
     <main className="page countdown-page" aria-label="Countdown page">
       <section className="countdown-shell">
+        <img className="countdown-marc" src={marcImage} alt="" aria-hidden="true" />
         <p className="countdown-message">Be at this location.</p>
         <p className="countdown-riddle">
           Where Mass Ave hums, the Red Line runs below, and Cambridge gathers in
